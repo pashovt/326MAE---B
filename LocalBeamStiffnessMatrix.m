@@ -1,10 +1,20 @@
 function beamMatrix = LocalBeamStiffnessMatrix(A, L, I, deg)
+% Calculates the local matrix for a beam using the provided formula
+% StiffMatrix = imread("RodBeamGlobal.png");
+% imshow(StiffMatrix)
+%
+% Expected inputs for a single element of the beam
+    % A - Area of the element
+    % L - Length of the element
+    % I - Second moment of Inertia of the beam cross section
+    % deg - Degree at which the element is tilted
+% 
+% Returns a the assembled local stiffness matrix
+
 beamMatrix = zeros(6, 6);
-% variables
-E = 68.9*10.^3; % 68.9 GPa
-% A = 1;
-% L = 1;
-% I = 1;
+
+% Variables for the specific material of the beam
+E = 68.9*10.^3; % 68.9 GPa - Youngs Modulus
 c = cos(deg);
 s = sin(deg);
 

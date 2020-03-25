@@ -1,4 +1,13 @@
 function LocalStiffnessMatrix = StiffnessMatrix(output)
+% Generates the stiffness matrixes for the whole system
+% Expected input
+    % output - generated output from the FindingMassMatrix function.
+    % It is an struct variable and contains the areas for each individual 
+    % section of the beam.
+%
+%  Returns a struct variable that contains the local stiffness matrixes of 
+% the system.
+
 % ZY view
 thickness = 4.8;
 height = 25.4;
@@ -23,7 +32,9 @@ ToCentroidTop = height - thickness + thickness/2;
 
 % Distance to centroid of shape
 TotalArea = Side1 + Side2 + Top;
+% Centroid location
 YA = (Side1*ToCentroidSide1) + (Side2*ToCentroidSide2) + (Top*ToCentroidTop);
+
 Centroid = YA/TotalArea;
 
 Ix = ((1/12)*thickness*height.^3) + Side1*abs(ToCentroidSide1-Centroid).^2 + ...
