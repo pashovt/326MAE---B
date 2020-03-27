@@ -43,9 +43,9 @@ Ix = ((1/12)*thickness*height.^3) + Side1*abs(ToCentroidSide1-Centroid).^2 + ...
 
 
 beamMatrix_1 = LocalBeamStiffnessMatrix(output.Trapezium_area_1Side, L_1, Ix, 0);
-beamMatrix_2 = LocalBeamStiffnessMatrix(output.Area_2Side, L_2, Ix, -111.81);
+beamMatrix_2 = LocalBeamStiffnessMatrix(output.Area_2Side, L_2, Ix, -43.62);
 beamMatrix_3 = LocalBeamStiffnessMatrix(output.Trapezium_area_3Side, L_3, Ix, 0);
-beamMatrix_4 = LocalBeamStiffnessMatrix(output.Area_4Side, L_4, Ix, 111.81);
+beamMatrix_4 = LocalBeamStiffnessMatrix(output.Area_4Side, L_4, Ix, 43.62);
 beamMatrix_5 = LocalBeamStiffnessMatrix(output.Trapezium_area_5Side, L_5, Ix, 0);
 
 LocalStiffnessMatrix.beamMatrix_1 = beamMatrix_1;
