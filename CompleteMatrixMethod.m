@@ -7,7 +7,7 @@ clc
 % Calculations are to be referenced/explained
 
 % Geometry/System
-% Geo = imread("../Geometry.png");
+% Geo = imread("Geometry.png");
 % imshow(Geo)
 
 % Characteristic of Modes:
