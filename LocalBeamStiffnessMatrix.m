@@ -1,4 +1,4 @@
-function beamMatrix = LocalBeamStiffnessMatrix(A, L, I, deg)
+function beamMatrix = LocalBeamStiffnessMatrix(A, L, I, E, deg)
 % Calculates the local matrix for a beam using the provided formula
 % StiffMatrix = imread("RodBeamGlobal.png");
 % imshow(StiffMatrix)
@@ -13,68 +13,58 @@ function beamMatrix = LocalBeamStiffnessMatrix(A, L, I, deg)
 
 beamMatrix = zeros(6, 6);
 
-% Variables for the specific material of the beam
-E = 68.9*10.^3; % 68.9 GPa - Youngs Modulus
+% Variables for the specific local element
 c = cos(deg);
 s = sin(deg);
 
+a = (E*A)/L;
+b = (12*E*I)/(L.^3);
 
-%% Top right
-% Top right block
-beamMatrix(1,1) = ((E*A)/L)*c.^2 + ((12*E*I)/L.^3)*s.^2;
-beamMatrix(1,2) = ((E*A)/L)*c*s - ((12*E*I)/L.^3)*c*s;
-beamMatrix(2,1) = beamMatrix(1,2); % ((E*A)/L)*c*s - ((12*E*I)/L.^3)*c*s
-beamMatrix(2,2) = ((E*A)/L)*s.^2 + ((12*E*I)/L.^3)*c.^2;
-
-% Top right remaining
-beamMatrix(3,1) = -((6*E*I)/L.^2)*s;
-beamMatrix(3,2) = ((6*E*I)/L.^2)*c;
-beamMatrix(3,3) = (4*E*I)/L;
-beamMatrix(1,3) = beamMatrix(3,1); % -((6*E*I)/L.^2)*s
-beamMatrix(2,3) = beamMatrix(3,2); % ((6*E*I)/L.^2)*c
+kk = (6*E*I)/(L.^2);
+ii = (4*E*I)/L;
+jj = (2*E*I)/L;
 
 
-%% Top left
-% Top left block
-beamMatrix(1,4) = -((E*A)/L)*c.^2 - ((12*E*I)/L.^3)*s.^2;
-beamMatrix(1,5) = -((E*A)/L)*c*s + ((12*E*I)/L.^3)*c*s;
-beamMatrix(2,4) = beamMatrix(1,5); % -((E*A)/L)*c*s + ((12*E*I)/L.^3)*c*s
-beamMatrix(2,5) = -((E*A)/L)*s.^2 - ((12*E*I)/L.^3)*c.^2;
+beamMatrix(1,1) = a*c.^2 + b*s.^2;
+beamMatrix(1,2) = a*c*s - b*c*s;
+beamMatrix(1,3) = -kk*s;
+beamMatrix(1,4) = -a*c.^2 - b*s.^2;
+beamMatrix(1,5) = -a*c*s + b*c*s;
+beamMatrix(1,6) = -kk*s;
 
-% Top left remaining
-beamMatrix(3,4) = -beamMatrix(3,1); % ((6*E*I)/L.^2)*s
-beamMatrix(3,5) = -beamMatrix(3,2); % -((6*E*I)/L.^2)*c
-beamMatrix(3,6) = (2*E*I)/L;
-beamMatrix(1,6) = -beamMatrix(3,4); % -((6*E*I)/L.^2)*s
-beamMatrix(2,6) = -beamMatrix(3,5); % ((6*E*I)/L.^2)*c
+beamMatrix(2,1) = a*c*s - b*c*s;
+beamMatrix(2,2) = a*s.^2 + b*c.^2;
+beamMatrix(2,3) = kk*c;
+beamMatrix(2,4) = -a*c*s + b*c*s;
+beamMatrix(2,5) = -a*s.^2 - b*c.^2;
+beamMatrix(2,6) = kk*c;
 
+beamMatrix(3,1) = -kk*s;
+beamMatrix(3,2) = kk*c;
+beamMatrix(3,3) = ii;
+beamMatrix(3,4) = kk*s;
+beamMatrix(3,5) = -kk*c;
+beamMatrix(3,6) = jj;
 
-%% Bottom right
-% Bottom right block
-beamMatrix(4,1) = beamMatrix(1,4); % -((E*A)/L)*c.^2 - ((12*E*I)/L.^3)*s.^2
-beamMatrix(4,2) = beamMatrix(1,5); % -((E*A)/L)*c*s + ((12*E*I)/L.^3)*c*s
-beamMatrix(5,1) = beamMatrix(2,4); % -((E*A)/L)*c*s + ((12*E*I)/L.^3)*c*s
-beamMatrix(5,2) = beamMatrix(2,5); % -((E*A)/L)*s.^2 - ((12*E*I)/L.^3)*c.^2
+beamMatrix(4,1) = -a*c.^2 - b*s.^2;
+beamMatrix(4,2) = -a*c*s + b*c*s;
+beamMatrix(4,3) = kk*s;
+beamMatrix(4,4) = a*c.^2 + b*s.^2;
+beamMatrix(4,5) = a*c*s - b*c*s;
+beamMatrix(4,6) = kk*s;
 
-% Bottom right remaining
-beamMatrix(6,1) = beamMatrix(3,1); % -((6*E*I)/L.^2)*s
-beamMatrix(6,2) = beamMatrix(3,2); % ((6*E*I)/L.^2)*c
-beamMatrix(6,3) = beamMatrix(3,6); % (2*E*I)/L
-beamMatrix(4,3) = -beamMatrix(6,1); % ((6*E*I)/L.^2)*s
-beamMatrix(5,3) = -beamMatrix(6,2); % -((6*E*I)/L.^2)*c
+beamMatrix(5,1) = -a*c*s + b*c*s;
+beamMatrix(5,2) = -a*s.^2 - b*c.^2;
+beamMatrix(5,3) = -kk*c;
+beamMatrix(5,4) = a*c*s - b*c*s;
+beamMatrix(5,5) = a*s.^2 + b*c.^2;
+beamMatrix(5,6) = -kk*c;
 
-%% Bottom left
-% Bottom left block
-beamMatrix(4,4) = beamMatrix(1,1); % ((E*A)/L)*c.^2 + ((12*E*I)/L.^3)*s.^2
-beamMatrix(4,5) = beamMatrix(1,2); % ((E*A)/L)*c*s - ((12*E*I)/L.^3)*c*s
-beamMatrix(5,4) = beamMatrix(2,1); % ((E*A)/L)*c*s - ((12*E*I)/L.^3)*c*s
-beamMatrix(5,5) = beamMatrix(2,2); % ((E*A)/L)*s.^2 + ((12*E*I)/L.^3)*c.^2
-
-% Bottom left remaining
-beamMatrix(6,4) = beamMatrix(3,4); % ((6*E*I)/L.^2)*s
-beamMatrix(6,5) = beamMatrix(3,5); % -((6*E*I)/L.^2)*c
-beamMatrix(6,6) = beamMatrix(3,3); % (4*E*I)/L
-beamMatrix(4,6) = beamMatrix(6,4); % ((6*E*I)/L.^2)*s
-beamMatrix(5,6) = beamMatrix(6,5); % -((6*E*I)/L.^2)*c
+beamMatrix(6,1) = -kk*s;
+beamMatrix(6,2) = kk*c;
+beamMatrix(6,3) = jj;
+beamMatrix(6,4) = kk*s;
+beamMatrix(6,5) = -kk*c;
+beamMatrix(6,6) = ii;
 
 end

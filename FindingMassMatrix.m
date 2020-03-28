@@ -1,4 +1,4 @@
-function output = FindingMassMatrix()
+function output = FindingMassMatrix(ToMeter)
 % Finds the area for each section of the '../Geometry.png' system.
 % The area is found for the side and the cut top section of the ZY view -
     % specific cross section of the beam
@@ -56,68 +56,69 @@ function output = FindingMassMatrix()
     % output.massMatrix [6×6 double]
 
 %% Sides Area
-depthSide = 4.8;
-Sidedegree = 21.81;
-Sideheight = 25.4;
+depthSide = 4.8/ToMeter;
+Sidedegree = 180-90-68.19; % 21.81;
+Sideheight = 25.4/ToMeter;
 
 SideB_diff = tand(Sidedegree)*Sideheight;
 SideHypothenuse = Sideheight/cosd(Sidedegree);
 
 % Section 1
-B1_1Side = 139;
+B1_1Side = 139/ToMeter;
 B2_1Side = B1_1Side - SideB_diff;
 output.Trapezium_area_1Side = ((B1_1Side+B2_1Side)/2)*Sideheight;
 % ceil(output.Trapezium_area_1Side)
 
 % Section 2
 A_2Side = SideHypothenuse;
-B_2Side = 88.41;
-output.Area_2Side = A_2Side * B_2Side; 
+B_2Side = 88.41/ToMeter;
+alphaSide = 68.19;
+output.Area_2Side = A_2Side*B_2Side*sind(alphaSide);
 % ceil(output.Area_2Side)
 
 % Section 3
-B2_3Side = 133;
+B2_3Side = 133/ToMeter;
 B1_3Side = B2_3Side + 2 * SideB_diff;
 output.Trapezium_area_3Side = ((B1_3Side+B2_3Side)/2) *Sideheight;
 % ceil(output.Trapezium_area_3Side)
 
 % Section 4
 % same as section 2
-A_4Side = SideHypothenuse;
-B_4Side = 88.41;
-output.Area_4Side = A_4Side * B_4Side; 
+output.Area_4Side = output.Area_2Side; 
 % ceil(output.Area_4Side)
 
 % Section 5
-B1_5Side = 203;
+B1_5Side = 203/ToMeter;
 B2_5Side = B1_5Side - SideB_diff;
 output.Trapezium_area_5Side = ((B1_5Side+B2_5Side)/2) *Sideheight;
 % ceil(output.Trapezium_area_5Side)
 
 %% Cut Top Area
-depthTop = 50.8-2*depthSide;
+originaldepthTop = 50.8/ToMeter;
+depthTop = originaldepthTop-(2*depthSide);
 Topdegree = 21.81;
-Topheight = 4.8;
+Topheight = 4.8/ToMeter;
 
 TopB_diff = tand(Topdegree)*Topheight;
 TopHypothenuse = Topheight/cosd(Topdegree);
 
 % Section 1
-B1_1Top = 139;
+B1_1Top = 139/ToMeter;
 B2_1Top = B1_1Top - TopB_diff;
 output.Trapezium_area_1Top = ((B1_1Top+B2_1Top)/2)*Topheight;
 % ceil(output.Trapezium_area_1Top)
 
 % Section 2
 A_2Top = TopHypothenuse;
-B_2Top = 88.41;
-output.Area_2Top = A_2Top * B_2Top; 
+B_2Top = 88.41/ToMeter;
+alphaTop = 68.19;
+output.Area_2Top = A_2Top*B_2Top*sind(alphaTop);
 % ceil(output.Area_2Top)
 
 % Section 3
-theta_angle = 111.81;
-B2_3Top = 133;
-TopB_diff2 = Topheight/tand(180-theta_angle);
+theta_angle = 68.19;
+B2_3Top = 133/ToMeter;
+TopB_diff2 = Topheight/tand(theta_angle);
 B1_3Top = B2_3Top + 2 * TopB_diff2;
 
 output.Trapezium_area_3Top = ((B1_3Top+B2_3Top)/2) *Topheight;
@@ -125,43 +126,46 @@ output.Trapezium_area_3Top = ((B1_3Top+B2_3Top)/2) *Topheight;
 
 % Section 4
 % same as section 2
-A_4Top = TopHypothenuse;
-B_4Top = 88.41;
-output.Area_4Top = A_4Top * B_4Top; 
+output.Area_4Top = output.Area_2Top;
 % ceil(output.Area_4Top)
 
 % Section 5
-B1_5Top = 203;
+B1_5Top = 203/ToMeter;
 B2_5Top = B1_5Top - TopB_diff;
 output.Trapezium_area_5Top = ((B1_5Top+B2_5Top)/2) *Topheight;
 % ceil(output.Trapezium_area_5Top)
 
 %% Mass of sections
+if ToMeter == 1
+    dev = 1e+9;
+elseif ToMeter == 1000
+    dev = 1;
+end
 density = 2720; % kg/m.^3
 
 % Section 1
 output.Volume_1 = (2*(output.Trapezium_area_1Side*depthSide) + ...
-    output.Trapezium_area_1Top*depthTop)/(1e+9);
+    output.Trapezium_area_1Top*depthTop)/dev;
 output.Mass_1 = output.Volume_1*density;
 
 % Section 2
 output.Volume_2 = (2*(output.Area_2Side*depthSide) + ...
-    output.Area_2Top*depthTop)/(1e+9);
+    output.Area_2Top*depthTop)/dev;
 output.Mass_2 = output.Volume_2*density;
 
 % Section 3
 output.Volume_3 = (2*(output.Trapezium_area_3Side*depthSide) + ...
-    output.Trapezium_area_3Top*depthTop)/(1e+9);
+    output.Trapezium_area_3Top*depthTop)/dev;
 output.Mass_3 = output.Volume_3*density;
 
 % Section 4
 output.Volume_4 = (2*(output.Area_4Side*depthSide) + ...
-    output.Area_4Top*depthTop)/(1e+9);
+    output.Area_4Top*depthTop)/dev;
 output.Mass_4 = output.Volume_4*density;
 
 % Section 5
 output.Volume_5 = (2*(output.Trapezium_area_5Side*depthSide) + ...
-    output.Trapezium_area_5Top*depthTop)/(1e+9);
+    output.Trapezium_area_5Top*depthTop)/dev;
 output.Mass_5 = output.Volume_5*density;
 
 output.TotalVolume = output.Volume_1 + output.Volume_2 + ...
