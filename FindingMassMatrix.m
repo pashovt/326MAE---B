@@ -136,9 +136,9 @@ output.Trapezium_area_5Top = ((B1_5Top+B2_5Top)/2) *Topheight;
 % ceil(output.Trapezium_area_5Top)
 
 %% Mass of sections
-if ToMeter == 1
+if ToMeter == 1 % mm
     dev = 1e+9;
-elseif ToMeter == 1000
+elseif ToMeter == 1000 % m
     dev = 1;
 end
 density = 2720; % kg/m.^3
